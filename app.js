@@ -21,6 +21,51 @@ function getWeather(city) {
                 '<p class="loading">Could not fetch weather data. Please try again.</p>';
         });
 }
+    async function getWeather(city) {
+      const url = `${API_URL}?q=${city}&appid=${API_KEY}&units=metric`;
+
+      try {
+         const response = await axios.get(url);
+
+         console.log(response.data);
+
+         displayWeather(response.data);
+
+    } catch (error) {
+        console.error(error);
+        showError("Something went wrong!");
+    }
+}
+ function showError(message) {
+    const weatherDiv = document.getElementById("weather-display");
+
+    weatherDiv.innerHTML = `
+        <div class="error-message">
+            ❌ ${message}
+        </div>
+    `;
+}
+const searchBtn = document.getElementById("search-btn");
+const cityInput = document.getElementById("city-input");
+
+searchBtn.addEventListener("click", function () {
+    const city = cityInput.value.trim();
+    searchBtn.disabled = true;
+
+    if (!city) {
+        showError("Please enter a city name");
+        return;
+    }
+
+    getWeather(city);
+});
+cityInput.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        searchBtn.click();
+    }
+ 
+});
+  
 
 // Function to display weather data
 function displayWeather(data) {
@@ -46,4 +91,34 @@ function displayWeather(data) {
 }
 
 // Call the function when page loads
-getWeather('London');
+ document.getElementById("weather-display").innerHTML = `
+    <p>🌍 Enter a city to get weather info</p>
+`;
+function showLoading() {
+    const weatherDiv = document.getElementById("weather-display");
+
+    weatherDiv.innerHTML = `
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    `;
+}
+async function getWeather(city) {
+    showLoading();
+
+    const url = `${API_URL}?q=${city}&appid=${API_KEY}&units=metric`;
+
+    try {
+        const response = await axios.get(url);
+
+        displayWeather(response.data);
+
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            showError("City not found!");
+        } else {
+            showError("Something went wrong!");
+        }
+    }
+}
