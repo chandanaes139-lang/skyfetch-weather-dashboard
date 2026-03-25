@@ -12,28 +12,61 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" /></filter></defs><rect width="1200" height="600" fill="%23667eea" opacity="0.1" filter="url(%23noise)"/></svg>');
+    pointer-events: none;
 }
 
 .container {
     background: rgba(255, 255, 255, 0.95);
     padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     text-align: center;
     max-width: 500px;
     width: 100%;
+    position: relative;
+    z-index: 1;
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 h1 {
     font-size: 2.5rem;
     color: #333;
     margin-bottom: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .tagline {
     color: #666;
     margin-bottom: 30px;
     font-size: 1rem;
+    font-weight: 300;
 }
 
 #weather-display {
@@ -43,6 +76,7 @@ h1 {
 .loading {
     color: #667eea;
     font-size: 1.1rem;
+    font-weight: 500;
 }
 
 .weather-info {
@@ -64,11 +98,15 @@ h1 {
     font-size: 2rem;
     color: #333;
     margin-bottom: 10px;
+    font-weight: 600;
 }
 
 .temperature {
     font-size: 3.5rem;
-    color: #667eea;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-weight: bold;
     margin: 20px 0;
 }
@@ -83,7 +121,14 @@ h1 {
 .weather-icon {
     width: 100px;
     height: 100px;
+    animation: float 3s ease-in-out infinite;
 }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
 .search-section {
     margin-bottom: 30px;
     display: flex;
@@ -96,11 +141,15 @@ h1 {
     border: 2px solid #ddd;
     flex: 1;
     font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
 }
 
 #city-input:focus {
     outline: none;
     border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
 }
 
 #search-btn {
@@ -110,19 +159,35 @@ h1 {
     background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
 }
 
 #search-btn:hover {
     transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
 }
+
+#search-btn:active {
+    transform: scale(0.95);
+}
+
 .error-message {
-    background: #ffe0e0;
+    background: linear-gradient(135deg, #ffe0e0, #ffcccc);
     color: #b30000;
     padding: 15px;
-    border-radius: 10px;
-    border-left: 5px solid red;
+    border-radius: 15px;
+    border-left: 5px solid #b30000;
+    animation: shake 0.5s ease;
 }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
 .loading-container {
     text-align: center;
 }
@@ -146,34 +211,62 @@ h1 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 15px;
+    margin-top: 25px;
 }
 
-.forecast-card {
-    background: #f0f4ff;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    transition: 0.3s;
-}
-
-.forecast-card:hover {
-    transform: translateY(-5px);
-}
 .forecast-card {
     background: linear-gradient(135deg, #74ebd5, #acb6e5);
     color: #fff;
     font-weight: 500;
+    padding: 20px 15px;
+    border-radius: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
 }
+
+.forecast-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
 .forecast-card:hover {
-    transform: translateY(-8px) scale(1.03);
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(116, 235, 213, 0.3);
 }
+
+.forecast-card:hover::before {
+    left: 100%;
+}
+
 @media (max-width: 768px) {
     .forecast-container {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .temperature {
+        font-size: 2.5rem;
+    }
 }
+
 .recent-searches-section {
-    margin: 20px 0;
+    margin: 25px 0;
+    padding-top: 25px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #recent-searches-container {
@@ -184,30 +277,38 @@ h1 {
 
 .recent-search-btn {
     padding: 8px 16px;
-    background: #f0f0f0;
-    border: none;
+    background: rgba(102, 126, 234, 0.1);
+    border: 2px solid rgba(102, 126, 234, 0.3);
     border-radius: 20px;
     cursor: pointer;
     font-size: 0.9rem;
     transition: all 0.3s ease;
+    color: #667eea;
+    font-weight: 500;
 }
 
 .recent-search-btn:hover {
-    background: #667eea;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    transform: translateY(-2px);
+    border-color: transparent;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
 
 .clear-history-btn {
     font-size: 0.8rem;
-    padding: 5px 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 6px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
     background: transparent;
     cursor: pointer;
+    transition: all 0.3s ease;
+    color: #666;
 }
 
 .clear-history-btn:hover {
     background: #ff4d4d;
     color: white;
+    border-color: #ff4d4d;
+    transform: scale(1.05);
 }
